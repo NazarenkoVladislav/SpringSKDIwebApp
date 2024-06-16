@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Панель администратора</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+
+<div class="container shadow-lg mt-5">
+
+    <h1>Список пользователей</h1>
+
+    <table class="table table-hover mb-5">
+        <thead>
+        <tr class="align-middle">
+            <th class="text-center"></th>
+            <th class="text-center"><b>Id</b></th>
+            <th class="text-center"><b>ФИО</b></th>
+            <th class="text-center"><b>Email</b></th>
+            <th class="text-center"><b>Служба</b></th>
+            <th class="text-center"><b>Предприятие</b></th>
+            <th class="text-center"><b>Активность</b></th>
+            <th class="text-center"><b>Роли</b></th>
+            <th class="text-center"><b>Бан</b></th>
+            <th class="text-center"><b>Подробно</b></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${users.isEmpty()}" class="align-middle">
+            <td class="text-center" colspan="10">
+                Пользователей не найдено!
+            </td>
+        </tr>
+        <tr th:each="user : ${users}" class="align-middle">
+            <td><img th:if="${!#strings.isEmpty(user.avatar)}"
+                     th:src="|/img/${user.avatar}|" alt="mdo"
+                     class="rounded-circle" width="50" height="50">
+                <img th:if="${#strings.isEmpty(user.avatar)}"
+                     src="/static/images/ava.jpg" alt="mdo" class="rounded-circle" width="50" height="50"></td>
+            <td><p th:text="${user.id}"></p></td>
+            <td><p th:text="|${user.surname} ${user.name} ${user.patronymic}|"></p></td>
+            <td><p th:text="${user.email}"></p></td>
+            <td><p th:text="${user.department}"></p></td>
+            <td><p th:text="${user.unit}"></p></td>
+            <td><p th:text="${user.active}"></p></td>
+            <td th:each="role : ${user.roles}">
+                <p th:text="|${role} |"></p>
+            </td>
+            <td>
+                <form th:action="|/admin/user/ban/${user.id}|" method="post">
+                    <input type="submit" class="btn btn-warning" value="Бан/Разбан">
+                </form>
+            </td>
+            <td><a th:href="|/admin/user/${user.id}|" class="btn btn-warning">Подробности</a></td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
+<div th:insert="blocks/footer :: footer"></div>
+
+</body>
+</html>
